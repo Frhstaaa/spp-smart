@@ -74,7 +74,7 @@ class PaymentRepository implements PaymentRepositoryInterface
         $student = \App\Models\Student::findOrFail($studentId);
         $tariff = $student->sppTariff ?? Tariff::where('type', 'spp')->first();
         
-        $dueDate = Carbon::createFromDate($data['year'], $data['month'], 1)->endOfMonth();
+        $dueDate = Carbon::createFromDate((int)$data['year'], (int)$data['month'], 1)->endOfMonth();
         
         $bill = Bill::firstOrCreate([
             'student_id' => $student->id,
@@ -97,7 +97,7 @@ class PaymentRepository implements PaymentRepositoryInterface
 
         DB::transaction(function () use ($monthsData, $student, $tariff) {
             foreach ($monthsData as $m) {
-                $dueDate = Carbon::createFromDate($m['year'], $m['month'], 1)->endOfMonth();
+                $dueDate = Carbon::createFromDate((int)$m['year'], (int)$m['month'], 1)->endOfMonth();
                 
                 $bill = Bill::firstOrCreate([
                     'student_id' => $student->id,
