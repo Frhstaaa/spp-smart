@@ -4,7 +4,7 @@ namespace Modules\Finance\Interfaces;
 
 interface PaymentRepositoryInterface
 {
-    public function getPendingBills();
+    public function getPendingBills($search = null);
     public function createCashPayment(array $data);
     public function createDigitalPayment($billId);
     public function createAdvancePayment(array $data, $studentId);

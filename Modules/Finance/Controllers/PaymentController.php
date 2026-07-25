@@ -17,10 +17,11 @@ class PaymentController extends Controller
         $this->paymentRepo = $paymentRepo;
     }
 
-    public function cashIndex()
+    public function cashIndex(Request $request)
     {
         return Inertia::render('Payments/CashIndex', [
-            'pendingBills' => $this->paymentRepo->getPendingBills()
+            'pendingBills' => $this->paymentRepo->getPendingBills($request->search),
+            'filters' => $request->only('search')
         ]);
     }
 

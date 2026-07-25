@@ -11,9 +11,20 @@ use Modules\Finance\Interfaces\PaymentRepositoryInterface;
 
 class PaymentRepository implements PaymentRepositoryInterface
 {
-    public function getPendingBills()
+    public function getPendingBills($search = null)
     {
-        return Bill::with(['student.schoolClass', 'tariff'])->where('status', '!=', 'paid')->get();
+        $query = Bill::with(['student.schoolClass', 'tariff'])->where('status', '!=', 'paid');
+        
+        if (!empty($search)) {
+            $query->whereHas('student', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('nis', 'like', "%{$search}%");
+            });
+        } else {
+            $query->limit(50);
+        }
+
+        return $query->orderBy('created_at', 'desc')->get();
     }
 
     public function createCashPayment(array $data)
@@ -25,6 +36,8 @@ class PaymentRepository implements PaymentRepositoryInterface
                 'payment_date' => now(),
                 'amount' => $data['amount_paid'],
                 'method' => 'cash',
+                'status' => 'success',
+                'cashier_id' => auth()->id(),
                 'transaction_id' => 'CASH-' . time() . '-' . $bill->id,
             ]);
 

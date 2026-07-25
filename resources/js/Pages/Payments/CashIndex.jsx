@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { CurrencyDollarIcon, MagnifyingGlassIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 
@@ -12,8 +12,8 @@ const formatRupiah = (number) => {
     }).format(number);
 };
 
-export default function CashIndex({ auth, pendingBills }) {
-    const [searchQuery, setSearchQuery] = useState('');
+export default function CashIndex({ auth, pendingBills, filters }) {
+    const [searchQuery, setSearchQuery] = useState(filters?.search || '');
     const [selectedBill, setSelectedBill] = useState(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -27,11 +27,17 @@ export default function CashIndex({ auth, pendingBills }) {
         return date.toLocaleString('id-ID', { month: 'long' });
     };
 
-    const filteredBills = pendingBills.filter(bill => {
-        const query = searchQuery.toLowerCase();
-        return bill.student?.name?.toLowerCase().includes(query) || 
-               bill.student?.nis?.toLowerCase().includes(query);
-    });
+    const handleSearch = (e) => {
+        const value = e.target.value;
+        setSearchQuery(value);
+        router.get(route('payments.cashIndex'), { search: value }, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true
+        });
+    };
+
+    const filteredBills = pendingBills;
 
     const handleSelectBill = (bill) => {
         setSelectedBill(bill);
@@ -71,7 +77,7 @@ export default function CashIndex({ auth, pendingBills }) {
                                     className="block w-full pl-12 pr-4 py-4 rounded-2xl border-slate-200 shadow-sm focus:border-teal-500 focus:ring-teal-500 bg-slate-50 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white"
                                     placeholder="Cari nama siswa atau NIS..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={handleSearch}
                                 />
                             </div>
 
@@ -90,7 +96,7 @@ export default function CashIndex({ auth, pendingBills }) {
                                             <div className="flex justify-between items-start">
                                                 <div>
                                                     <h4 className="font-bold text-lg text-slate-800 dark:text-white">{bill.student?.name}</h4>
-                                                    <p className="text-sm text-slate-500 dark:text-slate-400">NIS: {bill.student?.nis} • Kelas: {bill.student?.school_class?.name || '-'}</p>
+                                                    <p className="text-sm text-slate-500 dark:text-slate-400">NIS: {bill.student?.nis} ï¿½ Kelas: {bill.student?.school_class?.name || '-'}</p>
                                                     <div className="mt-2 inline-block bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300">
                                                         {bill.tariff?.name} ({getMonthName(bill.month)} {bill.year})
                                                     </div>
@@ -176,3 +182,4 @@ export default function CashIndex({ auth, pendingBills }) {
         </MainLayout>
     );
 }
+
