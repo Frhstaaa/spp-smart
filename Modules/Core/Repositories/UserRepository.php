@@ -3,7 +3,6 @@
 namespace Modules\Core\Repositories;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Modules\Core\Interfaces\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
@@ -33,29 +32,13 @@ class UserRepository implements UserRepositoryInterface
 
     public function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role' => $data['role'],
-        ]);
+        return User::create($data);
     }
 
     public function update($id, array $data)
     {
         $user = $this->findById($id);
-
-        $updateData = [
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'role' => $data['role'],
-        ];
-
-        if (!empty($data['password'])) {
-            $updateData['password'] = Hash::make($data['password']);
-        }
-
-        $user->update($updateData);
+        $user->update($data);
         return $user;
     }
 

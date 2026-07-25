@@ -10,15 +10,17 @@ use Modules\Finance\Interfaces\ExpenseRepositoryInterface;
 class ExpenseController extends Controller
 {
     protected $expenseRepo;
+    protected $expenseService;
 
-    public function __construct(ExpenseRepositoryInterface $expenseRepo)
+    public function __construct(ExpenseRepositoryInterface $expenseRepo, \Modules\Finance\Services\ExpenseService $expenseService)
     {
         $this->expenseRepo = $expenseRepo;
+        $this->expenseService = $expenseService;
     }
 
     public function index()
     {
-        $expenses = $this->expenseRepo->getAll();
+        $expenses = $this->expenseService->getAll();
         
         return Inertia::render('Expenses/Index', [
             'expenses' => $expenses
@@ -37,7 +39,7 @@ class ExpenseController extends Controller
 
         $validated['user_id'] = auth()->id();
 
-        $this->expenseRepo->create($validated);
+        $this->expenseService->createExpense($validated);
 
         return redirect()->route('expenses.index')->with('success', 'Pengeluaran berhasil dicatat.');
     }
@@ -52,14 +54,14 @@ class ExpenseController extends Controller
             'description' => 'nullable|string'
         ]);
 
-        $this->expenseRepo->update($id, $validated);
+        $this->expenseService->updateExpense($id, $validated);
 
         return redirect()->route('expenses.index')->with('success', 'Data pengeluaran berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $this->expenseRepo->delete($id);
+        $this->expenseService->deleteExpense($id);
 
         return redirect()->route('expenses.index')->with('success', 'Data pengeluaran berhasil dihapus.');
     }

@@ -15,22 +15,42 @@ interface BillRepositoryInterface
     public function getStudentBills($studentId);
 
     /**
-     * Generate auto bills based on validated request data.
+     * Find a bill by ID.
      */
-    public function generateAutoBills(array $data);
+    public function findById(int $id);
 
     /**
-     * Submit a discount request for a bill.
+     * Create a new bill.
      */
-    public function submitDiscountRequest(int $billId, int $studentId, array $data);
+    public function create(array $data);
 
     /**
-     * Approve or reject a discount request.
+     * Check if a bill exists for a student, tariff, month, year.
      */
-    public function updateDiscountStatus(int $discountRequestId, string $status, int $approvedById);
-    
+    public function checkBillExists(int $studentId, int $tariffId, int $month, int $year): bool;
+
     /**
      * Delete a bill by ID.
      */
     public function deleteBill(int $id);
+
+    /**
+     * Check if a pending discount request exists for a bill.
+     */
+    public function hasPendingDiscountRequest(int $billId): bool;
+
+    /**
+     * Create a new discount request.
+     */
+    public function createDiscountRequest(array $data);
+
+    /**
+     * Find a discount request by ID.
+     */
+    public function findDiscountRequestById(int $id);
+
+    /**
+     * Update a discount request.
+     */
+    public function updateDiscountRequest(int $id, array $data);
 }

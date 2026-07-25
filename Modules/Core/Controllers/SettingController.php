@@ -10,16 +10,18 @@ use Modules\Core\Interfaces\SettingRepositoryInterface;
 class SettingController extends Controller
 {
     protected $settingRepo;
+    protected $settingService;
 
-    public function __construct(SettingRepositoryInterface $settingRepo)
+    public function __construct(SettingRepositoryInterface $settingRepo, \Modules\Core\Services\SettingService $settingService)
     {
         $this->settingRepo = $settingRepo;
+        $this->settingService = $settingService;
     }
 
     public function index()
     {
         return Inertia::render('Settings/Index', [
-            'settings' => $this->settingRepo->getAllSettings()
+            'settings' => $this->settingService->getAllSettings()
         ]);
     }
 
@@ -61,7 +63,7 @@ class SettingController extends Controller
             unset($validated['dashboard_avatar_2']);
         }
 
-        $this->settingRepo->saveSettings($validated);
+        $this->settingService->saveSettings($validated);
 
         return redirect()->route('settings.index')->with('success', 'Pengaturan berhasil disimpan.');
     }

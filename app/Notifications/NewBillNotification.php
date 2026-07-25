@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Bill;
 
-class NewBillNotification extends Notification
+class NewBillNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

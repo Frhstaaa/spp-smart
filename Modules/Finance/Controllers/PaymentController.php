@@ -11,10 +11,12 @@ use App\Models\Tariff;
 class PaymentController extends Controller
 {
     protected $paymentRepo;
+    protected $paymentService;
 
-    public function __construct(PaymentRepositoryInterface $paymentRepo)
+    public function __construct(PaymentRepositoryInterface $paymentRepo, \Modules\Finance\Services\PaymentService $paymentService)
     {
         $this->paymentRepo = $paymentRepo;
+        $this->paymentService = $paymentService;
     }
 
     public function cashIndex(Request $request)
@@ -32,14 +34,14 @@ class PaymentController extends Controller
             'amount_paid' => 'required|numeric|min:0'
         ]);
 
-        $payment = $this->paymentRepo->createCashPayment($validated);
+        $payment = $this->paymentService->createCashPayment($validated);
 
         return redirect()->route('payments.receipt', $payment->id)->with('success', 'Pembayaran tunai berhasil dicatat.');
     }
 
     public function payDigital(Request $request, $billId)
     {
-        $this->paymentRepo->createDigitalPayment($billId);
+        $this->paymentService->createDigitalPayment($billId);
 
         return redirect()->route('siswa.bills')->with('success', 'Pembayaran sedang diproses dan menunggu konfirmasi dari Tata Usaha.');
     }
@@ -52,7 +54,7 @@ class PaymentController extends Controller
         ]);
         
         $studentId = auth()->user()->student->id;
-        $this->paymentRepo->createAdvancePayment($validated, $studentId);
+        $this->paymentService->createAdvancePayment($validated, $studentId);
         
         return redirect()->route('siswa.bills')->with('success', 'Pembayaran sedang diproses dan menunggu konfirmasi dari Tata Usaha.');
     }
@@ -78,7 +80,7 @@ class PaymentController extends Controller
         ]);
 
         $studentId = auth()->user()->student->id;
-        $this->paymentRepo->createMultiplePayments($validated['months'], $studentId);
+        $this->paymentService->createMultiplePayments($validated['months'], $studentId);
 
         return redirect()->route('siswa.bills')->with('success', 'Pembayaran untuk bulan-bulan terpilih sedang diproses dan menunggu konfirmasi dari Tata Usaha.');
     }
@@ -111,7 +113,7 @@ class PaymentController extends Controller
 
     public function approve($paymentId)
     {
-        $success = $this->paymentRepo->approvePayment($paymentId);
+        $success = $this->paymentService->approvePayment($paymentId);
 
         if (!$success) {
             return back()->with('error', 'Pembayaran ini sudah tidak berstatus pending.');
@@ -122,7 +124,7 @@ class PaymentController extends Controller
 
     public function reject($paymentId)
     {
-        $success = $this->paymentRepo->rejectPayment($paymentId);
+        $success = $this->paymentService->rejectPayment($paymentId);
 
         if (!$success) {
             return back()->with('error', 'Pembayaran ini sudah tidak berstatus pending.');

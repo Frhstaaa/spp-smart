@@ -64,7 +64,8 @@ class WhatsAppService
         $message .= "Untuk mengunduh struk resmi atau mengecek tagihan lainnya, silakan login ke aplikasi KAS kami.\n\n";
         $message .= "_Ini adalah pesan otomatis dari sistem._";
 
-        return $this->sendMessage($parentPhone, $message);
+        \App\Jobs\SendWhatsAppJob::dispatch($parentPhone, $message);
+        return true;
     }
     
     public function sendNewBill($bill)
@@ -91,6 +92,7 @@ class WhatsAppService
         $message .= "Terima kasih.\n";
         $message .= "_Ini adalah pesan otomatis dari sistem._";
 
-        return $this->sendMessage($parentPhone, $message);
+        \App\Jobs\SendWhatsAppJob::dispatch($parentPhone, $message);
+        return true;
     }
 }

@@ -10,10 +10,12 @@ use Inertia\Inertia;
 class SchoolClassController extends Controller
 {
     protected $classRepo;
+    protected $classService;
 
-    public function __construct(SchoolClassRepositoryInterface $classRepo)
+    public function __construct(SchoolClassRepositoryInterface $classRepo, \Modules\Academic\Services\SchoolClassService $classService)
     {
         $this->classRepo = $classRepo;
+        $this->classService = $classService;
     }
 
     public function index()
@@ -35,7 +37,7 @@ class SchoolClassController extends Controller
             'level' => 'required|string|max:255'
         ]);
 
-        $this->classRepo->create($validated);
+        $this->classService->createClass($validated);
 
         return redirect()->route('classes.index')->with('success', 'Kelas berhasil ditambahkan.');
     }
@@ -55,14 +57,14 @@ class SchoolClassController extends Controller
             'level' => 'required|string|max:255'
         ]);
 
-        $this->classRepo->update($id, $validated);
+        $this->classService->updateClass($id, $validated);
 
         return redirect()->route('classes.index')->with('success', 'Kelas berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $this->classRepo->delete($id);
+        $this->classService->deleteClass($id);
         return redirect()->route('classes.index')->with('success', 'Kelas berhasil dihapus.');
     }
 }

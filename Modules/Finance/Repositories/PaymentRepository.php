@@ -5,8 +5,6 @@ namespace Modules\Finance\Repositories;
 use App\Models\Payment;
 use App\Models\Bill;
 use App\Models\Tariff;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Modules\Finance\Interfaces\PaymentRepositoryInterface;
 
 class PaymentRepository implements PaymentRepositoryInterface
@@ -25,105 +23,6 @@ class PaymentRepository implements PaymentRepositoryInterface
         }
 
         return $query->orderBy('created_at', 'desc')->get();
-    }
-
-    public function createCashPayment(array $data)
-    {
-        return DB::transaction(function () use ($data) {
-            $bill = Bill::findOrFail($data['bill_id']);
-            $payment = Payment::create([
-                'bill_id' => $bill->id,
-                'payment_date' => now(),
-                'amount' => $data['amount_paid'],
-                'method' => 'cash',
-                'status' => 'success',
-                'cashier_id' => auth()->id(),
-                'transaction_id' => 'CASH-' . time() . '-' . $bill->id,
-            ]);
-
-            $bill->update(['status' => 'paid']);
-            
-            if ($bill->student && $bill->student->user) {
-                $bill->student->user->notify(new \App\Notifications\PaymentConfirmedNotification($payment));
-            }
-            
-            // Send WA Receipt
-            app(\App\Services\WhatsAppService::class)->sendReceipt($payment);
-            
-            return $payment;
-        });
-    }
-
-    public function createDigitalPayment($billId)
-    {
-        return DB::transaction(function () use ($billId) {
-            $bill = Bill::findOrFail($billId);
-            return Payment::create([
-                'bill_id' => $bill->id,
-                'payment_date' => now(),
-                'amount' => $bill->amount,
-                'method' => 'qris',
-                'status' => 'pending',
-                'transaction_id' => 'DGT-' . time() . '-' . $bill->id,
-            ]);
-        });
-    }
-
-    public function createAdvancePayment(array $data, $studentId)
-    {
-        $student = \App\Models\Student::findOrFail($studentId);
-        $tariff = $student->sppTariff ?? Tariff::where('type', 'spp')->first();
-        
-        $dueDate = Carbon::createFromDate((int)$data['year'], (int)$data['month'], 1)->endOfMonth();
-        
-        $bill = Bill::firstOrCreate([
-            'student_id' => $student->id,
-            'tariff_id' => $tariff->id,
-            'month' => $data['month'],
-            'year' => $data['year']
-        ], [
-            'amount' => $tariff->amount,
-            'due_date' => $dueDate,
-            'status' => 'pending'
-        ]);
-        
-        return $this->createDigitalPayment($bill->id);
-    }
-
-    public function createMultiplePayments(array $monthsData, $studentId)
-    {
-        $student = \App\Models\Student::findOrFail($studentId);
-        $tariff = $student->sppTariff ?? Tariff::where('type', 'spp')->first();
-
-        DB::transaction(function () use ($monthsData, $student, $tariff) {
-            foreach ($monthsData as $m) {
-                $dueDate = Carbon::createFromDate((int)$m['year'], (int)$m['month'], 1)->endOfMonth();
-                
-                $bill = Bill::firstOrCreate([
-                    'student_id' => $student->id,
-                    'tariff_id' => $tariff->id,
-                    'month' => $m['month'],
-                    'year' => $m['year']
-                ], [
-                    'amount' => $tariff->amount,
-                    'due_date' => $dueDate,
-                    'status' => 'pending'
-                ]);
-
-                $hasPendingPayment = Payment::where('bill_id', $bill->id)->where('status', 'pending')->exists();
-
-                if (!$hasPendingPayment && $bill->status !== 'paid') {
-                    Payment::create([
-                        'bill_id' => $bill->id,
-                        'payment_date' => now(),
-                        'amount' => $bill->amount,
-                        'method' => 'qris',
-                        'status' => 'pending', 
-                        'transaction_id' => 'DGT-' . time() . '-' . $bill->id,
-                    ]);
-                }
-            }
-        });
     }
 
     public function getStudentBillsForPayment($studentId)
@@ -145,8 +44,7 @@ class PaymentRepository implements PaymentRepositoryInterface
 
     public function getPaymentById($paymentId)
     {
-        $payment = Payment::with(['bill.student.schoolClass', 'bill.tariff', 'cashier'])->findOrFail($paymentId);
-        return $payment;
+        return Payment::with(['bill.student.schoolClass', 'bill.tariff', 'cashier'])->findOrFail($paymentId);
     }
 
     public function getPendingPayments()
@@ -156,35 +54,40 @@ class PaymentRepository implements PaymentRepositoryInterface
             ->orderBy('payment_date', 'asc')
             ->get();
     }
-
-    public function approvePayment($paymentId)
+    
+    // Data Access Core
+    
+    public function createPayment(array $data)
     {
-        return DB::transaction(function () use ($paymentId) {
-            $payment = Payment::findOrFail($paymentId);
-            if ($payment->status !== 'pending') return false;
-
-            $payment->update(['status' => 'success']);
-
-            if ($payment->bill) {
-                $payment->bill->update(['status' => 'paid']);
-                
-                if ($payment->bill->student && $payment->bill->student->user) {
-                    $payment->bill->student->user->notify(new \App\Notifications\PaymentConfirmedNotification($payment));
-                }
-                
-                // Send WA Receipt
-                app(\App\Services\WhatsAppService::class)->sendReceipt($payment);
-            }
-            return true;
-        });
+        return Payment::create($data);
     }
-
-    public function rejectPayment($paymentId)
+    
+    public function updatePayment(int $paymentId, array $data)
     {
         $payment = Payment::findOrFail($paymentId);
-        if ($payment->status !== 'pending') return false;
-
-        $payment->update(['status' => 'failed']);
-        return true;
+        $payment->update($data);
+        return $payment;
+    }
+    
+    public function getBillById(int $billId)
+    {
+        return Bill::findOrFail($billId);
+    }
+    
+    public function updateBill(int $billId, array $data)
+    {
+        $bill = Bill::findOrFail($billId);
+        $bill->update($data);
+        return $bill;
+    }
+    
+    public function findPendingPaymentForBill(int $billId)
+    {
+        return Payment::where('bill_id', $billId)->where('status', 'pending')->first();
+    }
+    
+    public function firstOrCreateBill(array $attributes, array $values)
+    {
+        return Bill::firstOrCreate($attributes, $values);
     }
 }

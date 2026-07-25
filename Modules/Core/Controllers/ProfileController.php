@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     protected $profileRepo;
+    protected $profileService;
 
-    public function __construct(ProfileRepositoryInterface $profileRepo)
+    public function __construct(ProfileRepositoryInterface $profileRepo, \Modules\Core\Services\ProfileService $profileService)
     {
         $this->profileRepo = $profileRepo;
+        $this->profileService = $profileService;
     }
 
     public function edit(Request $request)
@@ -31,14 +33,14 @@ class ProfileController extends Controller
             'phone_number' => 'nullable|string|max:20',
         ]);
 
-        $this->profileRepo->updateInfo($request->user(), $validated);
+        $this->profileService->updateInfo($request->user(), $validated);
         
         return back()->with('success', 'Profile updated');
     }
 
     public function updatePhoto(Request $request)
     {
-        $this->profileRepo->updatePhoto($request->user(), $request->all());
+        $this->profileService->updatePhoto($request->user(), $request->all());
         return back();
     }
 
@@ -52,7 +54,7 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        $this->profileRepo->deleteAccount($user);
+        $this->profileService->deleteAccount($user);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

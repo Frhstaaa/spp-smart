@@ -12,15 +12,18 @@ use Inertia\Inertia;
 class StudentController extends Controller
 {
     protected $studentRepo;
+    protected $studentService;
     protected $classRepo;
     protected $angkatanRepo;
 
     public function __construct(
         StudentRepositoryInterface $studentRepo,
+        \Modules\Academic\Services\StudentService $studentService,
         SchoolClassRepositoryInterface $classRepo,
         AngkatanRepositoryInterface $angkatanRepo
     ) {
         $this->studentRepo = $studentRepo;
+        $this->studentService = $studentService;
         $this->classRepo = $classRepo;
         $this->angkatanRepo = $angkatanRepo;
     }
@@ -64,7 +67,7 @@ class StudentController extends Controller
             'is_paid_yearly' => 'nullable|boolean',
         ]);
 
-        $this->studentRepo->create($validated);
+        $this->studentService->createStudent($validated);
 
         return redirect()->route('students.index')->with('success', 'Siswa berhasil ditambahkan. (Password default akun adalah NIS)');
     }
@@ -102,14 +105,14 @@ class StudentController extends Controller
             'password' => 'nullable|string|min:8|confirmed'
         ]);
 
-        $this->studentRepo->update($id, $validated);
+        $this->studentService->updateStudent($id, $validated);
 
         return redirect()->route('students.index')->with('success', 'Data Siswa berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $this->studentRepo->delete($id);
+        $this->studentService->deleteStudent($id);
 
         return redirect()->route('students.index')->with('success', 'Data Siswa berhasil dihapus.');
     }

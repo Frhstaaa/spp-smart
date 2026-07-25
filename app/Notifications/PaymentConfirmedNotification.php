@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Payment;
 
-class PaymentConfirmedNotification extends Notification
+class PaymentConfirmedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

@@ -10,10 +10,12 @@ use Inertia\Inertia;
 class AngkatanController extends Controller
 {
     protected $angkatanRepo;
+    protected $angkatanService;
 
-    public function __construct(AngkatanRepositoryInterface $angkatanRepo)
+    public function __construct(AngkatanRepositoryInterface $angkatanRepo, \Modules\Academic\Services\AngkatanService $angkatanService)
     {
         $this->angkatanRepo = $angkatanRepo;
+        $this->angkatanService = $angkatanService;
     }
 
     public function index()
@@ -31,7 +33,7 @@ class AngkatanController extends Controller
             'year' => 'nullable|string|max:10'
         ]);
 
-        $this->angkatanRepo->create($validated);
+        $this->angkatanService->createAngkatan($validated);
 
         return redirect()->back()->with('success', 'Data Angkatan berhasil ditambahkan.');
     }
@@ -43,14 +45,14 @@ class AngkatanController extends Controller
             'year' => 'nullable|string|max:10'
         ]);
 
-        $this->angkatanRepo->update($id, $validated);
+        $this->angkatanService->updateAngkatan($id, $validated);
 
         return redirect()->back()->with('success', 'Data Angkatan berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $this->angkatanRepo->delete($id);
+        $this->angkatanService->deleteAngkatan($id);
 
         return redirect()->back()->with('success', 'Data Angkatan berhasil dihapus.');
     }

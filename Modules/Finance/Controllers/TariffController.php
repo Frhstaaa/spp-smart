@@ -11,16 +11,18 @@ use App\Models\Angkatan;
 class TariffController extends Controller
 {
     protected $tariffRepo;
+    protected $tariffService;
 
-    public function __construct(TariffRepositoryInterface $tariffRepo)
+    public function __construct(TariffRepositoryInterface $tariffRepo, \Modules\Finance\Services\TariffService $tariffService)
     {
         $this->tariffRepo = $tariffRepo;
+        $this->tariffService = $tariffService;
     }
 
     public function index()
     {
         return Inertia::render('Tariffs/Index', [
-            'tariffs' => $this->tariffRepo->getAllWithAngkatan(),
+            'tariffs' => $this->tariffService->getAllWithAngkatan(),
             'angkatans' => Angkatan::orderBy('year', 'desc')->get()
         ]);
     }
@@ -40,7 +42,7 @@ class TariffController extends Controller
             'auto_generate_date' => 'nullable|integer|min:1|max:28'
         ]);
 
-        $this->tariffRepo->create($validated);
+        $this->tariffService->createTariff($validated);
 
         return redirect()->route('tariffs.index')->with('success', 'Tarif berhasil ditambahkan.');
     }
@@ -48,7 +50,7 @@ class TariffController extends Controller
     public function edit($id)
     {
         return Inertia::render('Tariffs/Edit', [
-            'tariff' => $this->tariffRepo->findById($id)
+            'tariff' => $this->tariffService->findById($id)
         ]);
     }
 
@@ -62,14 +64,14 @@ class TariffController extends Controller
             'auto_generate_date' => 'nullable|integer|min:1|max:28'
         ]);
 
-        $this->tariffRepo->update($id, $validated);
+        $this->tariffService->updateTariff($id, $validated);
 
         return redirect()->route('tariffs.index')->with('success', 'Data Tarif berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $this->tariffRepo->delete($id);
+        $this->tariffService->deleteTariff($id);
         return redirect()->route('tariffs.index')->with('success', 'Tarif berhasil dihapus.');
     }
 }

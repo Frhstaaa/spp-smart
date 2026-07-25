@@ -11,10 +11,12 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
     protected $userRepo;
+    protected $userService;
 
-    public function __construct(UserRepositoryInterface $userRepo)
+    public function __construct(UserRepositoryInterface $userRepo, \Modules\Core\Services\UserService $userService)
     {
         $this->userRepo = $userRepo;
+        $this->userService = $userService;
     }
 
     public function index(Request $request)
@@ -22,7 +24,7 @@ class UserController extends Controller
         $search = $request->input('search');
         $role = $request->input('role', 'all');
 
-        $users = $this->userRepo->getAllUsers($search, $role);
+        $users = $this->userService->getAllUsers($search, $role);
 
         return Inertia::render('Users/Index', [
             'users' => $users,
@@ -47,7 +49,7 @@ class UserController extends Controller
             'role' => ['required', Rule::in(['tata_usaha', 'yayasan', 'siswa'])],
         ]);
 
-        $this->userRepo->create($validated);
+        $this->userService->createUser($validated);
 
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
@@ -55,7 +57,7 @@ class UserController extends Controller
     public function edit($id)
     {
         return Inertia::render('Users/Edit', [
-            'user' => $this->userRepo->findById($id)
+            'user' => $this->userService->findById($id)
         ]);
     }
 
@@ -68,7 +70,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $this->userRepo->update($id, $validated);
+        $this->userService->updateUser($id, $validated);
 
         return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
     }
@@ -79,7 +81,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
-        $this->userRepo->delete($id);
+        $this->userService->deleteUser($id);
 
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
     }

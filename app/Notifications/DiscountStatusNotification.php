@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\DiscountRequest;
 
-class DiscountStatusNotification extends Notification
+class DiscountStatusNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

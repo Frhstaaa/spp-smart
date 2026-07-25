@@ -12,10 +12,12 @@ use App\Models\Angkatan;
 class MonitoringController extends Controller
 {
     protected $monitoringRepo;
+    protected $monitoringService;
 
-    public function __construct(MonitoringRepositoryInterface $monitoringRepo)
+    public function __construct(MonitoringRepositoryInterface $monitoringRepo, \Modules\Core\Services\MonitoringService $monitoringService)
     {
         $this->monitoringRepo = $monitoringRepo;
+        $this->monitoringService = $monitoringService;
     }
 
     public function index(Request $request)
@@ -25,7 +27,7 @@ class MonitoringController extends Controller
         $angkatanId = $request->input('angkatan_id', 'all');
         $search = $request->input('search', '');
 
-        $students = $this->monitoringRepo->getStudentMonitoringData($year, $classId, $angkatanId, $search);
+        $students = $this->monitoringService->getStudentMonitoringData($year, $classId, $angkatanId, $search);
 
         $classes = SchoolClass::orderBy('name', 'asc')->get();
         $angkatans = Angkatan::orderBy('year', 'desc')->get();

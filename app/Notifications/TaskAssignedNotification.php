@@ -3,12 +3,14 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use App\Models\Task;
 use App\Models\User;
 
-class TaskAssignedNotification extends Notification
+class TaskAssignedNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
 
     public $task;
     public $assignedBy;

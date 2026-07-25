@@ -11,14 +11,17 @@ use App\Models\Tariff;
 use App\Models\SchoolClass;
 use App\Models\DiscountRequest;
 use Modules\Finance\Interfaces\BillRepositoryInterface;
+use Modules\Finance\Services\BillService;
 
 class BillController extends Controller
 {
     protected $billRepository;
+    protected $billService;
 
-    public function __construct(BillRepositoryInterface $billRepository)
+    public function __construct(BillRepositoryInterface $billRepository, BillService $billService)
     {
         $this->billRepository = $billRepository;
+        $this->billService = $billService;
     }
 
     public function index()
@@ -51,7 +54,7 @@ class BillController extends Controller
             'generate_12_months' => 'nullable|boolean'
         ]);
 
-        $generatedCount = $this->billRepository->generateAutoBills($validated);
+        $generatedCount = $this->billService->generateAutoBills($validated);
 
         return redirect()->route('bills.index')->with('success', "$generatedCount Tagihan berhasil digenerate.");
     }
@@ -74,7 +77,7 @@ class BillController extends Controller
         if (!$student) abort(403);
 
         try {
-            $this->billRepository->submitDiscountRequest($bill->id, $student->id, $request->all());
+            $this->billService->submitDiscountRequest($bill->id, $student->id, $request->all());
             return back()->with('success', 'Pengajuan keringanan biaya berhasil dikirim dan sedang menunggu persetujuan yayasan.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -95,7 +98,7 @@ class BillController extends Controller
             'status' => 'required|in:approved,rejected'
         ]);
 
-        $this->billRepository->updateDiscountStatus($id, $request->status, $request->user()->id);
+        $this->billService->updateDiscountStatus($id, $request->status, $request->user()->id);
 
         return back()->with('success', 'Status pengajuan keringanan berhasil diperbarui.');
     }

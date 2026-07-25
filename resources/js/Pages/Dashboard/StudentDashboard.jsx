@@ -155,7 +155,7 @@ export default function StudentDashboard({ auth, student, currentBill, recentPay
                             </div>
                         </div>
                         {/* Avatar 2 */}
-                        <div className="absolute right-2 sm:right-6 bottom-0 w-[130px] sm:w-[160px] h-[145%] pointer-events-none flex items-end justify-end z-0">
+                        <div className="absolute right-2 sm:right-6 lg:right-0 bottom-0 w-[130px] sm:w-[160px] lg:w-[115px] h-[145%] pointer-events-none flex items-end justify-end z-0">
                             <img src={props.appAvatar2} alt="Avatar Aksi Cepat" className="w-full h-full object-contain object-bottom" onError={(e) => e.target.style.display='none'} />
                         </div>
                     </motion.div>
