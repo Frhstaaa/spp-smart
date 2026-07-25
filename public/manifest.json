@@ -1,0 +1,17 @@
+{
+  "name": "SIM KAS Sekolah",
+  "short_name": "SIM KAS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366F1",
+  "description": "Sistem Keuangan Sekolah Modern dan Terintegrasi",
+  "icons": [
+    {
+      "src": "/avatar_3d.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
