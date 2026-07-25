@@ -33,7 +33,7 @@ export default function ResetPassword({ token, email }) {
 
     return (
         <>
-            <Head title="Reset Kata Sandi — SIM KAS Sekolah" />
+            <Head title="Reset Kata Sandi — Smart SPP Sekolah" />
 
             <div className="relative min-h-screen flex items-center justify-center bg-[#0f172a] overflow-hidden font-sans py-12">
                 <motion.div 

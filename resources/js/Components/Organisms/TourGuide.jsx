@@ -22,7 +22,7 @@ export default function TourGuide() {
     const steps = [
         {
             target: 'body',
-            content: 'Selamat datang di SIM KAS! Mari ikuti tur singkat untuk mengenal fitur-fitur baru kami.',
+            content: 'Selamat datang di Smart SPP! Mari ikuti tur singkat untuk mengenal fitur-fitur baru kami.',
             placement: 'center',
             disableBeacon: true,
         },

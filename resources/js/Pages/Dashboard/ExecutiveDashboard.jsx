@@ -42,7 +42,7 @@ export default function ExecutiveDashboard({ auth, metrics, pendingDiscounts, re
                         <div className="relative z-10 w-[65%] sm:w-2/3">
                             <h3 className="text-[22px] sm:text-2xl font-bold mb-1.5 tracking-tight">Halo, {auth.user.name.split(' ')[0]}! 👋</h3>
                             <p className="text-white/90 text-[11px] sm:text-xs mb-5 leading-relaxed max-w-[200px] sm:max-w-md">
-                                Berikut adalah ringkasan kesehatan finansial SIM KAS Sekolah hari ini.
+                                Berikut adalah ringkasan kesehatan finansial Smart SPP Sekolah hari ini.
                             </p>
                             <Link href="#ringkasan" className="bg-white text-[#4238E0] text-[11px] sm:text-xs font-bold px-5 py-2.5 rounded-full inline-flex items-center gap-1.5 hover:bg-slate-50 transition-colors shadow-sm">
                                 Lihat Laporan <ChevronRightIcon className="w-3.5 h-3.5" strokeWidth={3} />

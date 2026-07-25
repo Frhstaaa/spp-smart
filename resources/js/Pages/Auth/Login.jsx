@@ -24,7 +24,7 @@ export default function Login({ status }) {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { duration: 0.8, staggerChildren: 0.1 } }
     };
-    
+
     const itemVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
@@ -32,21 +32,21 @@ export default function Login({ status }) {
 
     return (
         <>
-            <Head title="Login — SIM KAS Sekolah" />
+            <Head title="Login — Smart SPP Sekolah" />
 
             {/* Dynamic Background */}
             <div className="relative min-h-screen flex items-center justify-center bg-[#0f172a] overflow-hidden font-sans">
                 {/* Animated Gradient Orbs */}
-                <motion.div 
-                    animate={{ 
+                <motion.div
+                    animate={{
                         scale: [1, 1.2, 1],
                         rotate: [0, 90, 0],
                     }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                     className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-gradient-to-r from-indigo-500/30 to-purple-500/30 blur-[120px] pointer-events-none"
                 />
-                <motion.div 
-                    animate={{ 
+                <motion.div
+                    animate={{
                         scale: [1, 1.5, 1],
                         rotate: [0, -90, 0],
                     }}
@@ -55,7 +55,7 @@ export default function Login({ status }) {
                 />
 
                 {/* Glassmorphism Container */}
-                <motion.div 
+                <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -68,18 +68,18 @@ export default function Login({ status }) {
                                 <ClipboardDocumentListIcon className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-white tracking-wide">SIM KAS</h2>
-                                <p className="text-xs text-indigo-200 font-medium">Sistem Keuangan Sekolah</p>
+                                <h2 className="text-xl font-bold text-white tracking-wide">Smart SPP</h2>
+                                <p className="text-xs text-indigo-200 font-medium">Smart School Payment Platform.</p>
                             </div>
                         </div>
-                        
+
                         <h1 className="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-6 leading-tight">
-                            Kelola Keuangan Sekolah dengan Cerdas.
+                            Kelola Keuangan Sekolah dalam Satu Platform.
                         </h1>
                         <p className="text-lg text-slate-400 max-w-lg mb-8 leading-relaxed">
-                            Platform modern untuk memonitor SPP, tabungan, dan kas secara transparan, mudah, dan terintegrasi langsung dengan WhatsApp.
+                            Platform modern untuk memonitor SPP dan kas secara transparan, mudah, dan terintegrasi langsung dengan WhatsApp.
                         </p>
-                        
+
                         {/* Features List */}
                         <div className="space-y-4">
                             {['Laporan Keuangan Real-time', 'Notifikasi WhatsApp Otomatis', 'Data Aman & Terpusat'].map((feature, i) => (
@@ -101,7 +101,7 @@ export default function Login({ status }) {
                                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
                                         <ClipboardDocumentListIcon className="w-6 h-6 text-white" />
                                     </div>
-                                    <h2 className="text-2xl font-bold text-white tracking-wide">SIM KAS</h2>
+                                    <h2 className="text-2xl font-bold text-white tracking-wide">Smart SPP</h2>
                                 </div>
                             </div>
 
@@ -113,7 +113,7 @@ export default function Login({ status }) {
                             <form onSubmit={submit} className="space-y-6">
                                 <AnimatePresence>
                                     {status && (
-                                        <motion.div 
+                                        <motion.div
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -10 }}
@@ -141,7 +141,7 @@ export default function Login({ status }) {
                                             className={`w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-800/50 backdrop-blur-sm border text-white placeholder-slate-500 transition-all duration-300 outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-slate-800/80 ${errors.email
                                                 ? 'border-red-500/50 focus:border-red-500'
                                                 : 'border-white/10 hover:border-white/20 focus:border-indigo-500'
-                                            }`}
+                                                }`}
                                         />
                                     </div>
                                     <AnimatePresence>
@@ -169,7 +169,7 @@ export default function Login({ status }) {
                                             className={`w-full pl-11 pr-12 py-3.5 rounded-xl bg-slate-800/50 backdrop-blur-sm border text-white placeholder-slate-500 transition-all duration-300 outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-slate-800/80 ${errors.password
                                                 ? 'border-red-500/50 focus:border-red-500'
                                                 : 'border-white/10 hover:border-white/20 focus:border-indigo-500'
-                                            }`}
+                                                }`}
                                         />
                                         <button
                                             type="button"
@@ -199,12 +199,12 @@ export default function Login({ status }) {
                                             <div className={`w-5 h-5 rounded-md border transition-all duration-300 flex items-center justify-center ${data.remember
                                                 ? 'bg-indigo-500 border-indigo-500'
                                                 : 'bg-slate-800/50 border-white/20 group-hover:border-indigo-400'
-                                            }`}>
-                                                <motion.svg 
+                                                }`}>
+                                                <motion.svg
                                                     initial={false}
                                                     animate={data.remember ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                                                    className="w-3.5 h-3.5 text-white" 
-                                                    viewBox="0 0 12 10" 
+                                                    className="w-3.5 h-3.5 text-white"
+                                                    viewBox="0 0 12 10"
                                                     fill="none"
                                                 >
                                                     <path d="M1.5 5.5L4.5 8.5L10.5 1.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />

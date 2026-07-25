@@ -25,7 +25,7 @@ export default function ForgotPassword({ status }) {
 
     return (
         <>
-            <Head title="Lupa Kata Sandi — SIM KAS Sekolah" />
+            <Head title="Lupa Kata Sandi — Smart SPP Sekolah" />
 
             <div className="relative min-h-screen flex items-center justify-center bg-[#0f172a] overflow-hidden font-sans">
                 {/* Animated Gradient Orbs */}
@@ -53,7 +53,7 @@ export default function ForgotPassword({ status }) {
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
                                     <ClipboardDocumentListIcon className="w-6 h-6 text-white" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-white tracking-wide">SIM KAS</h2>
+                                <h2 className="text-2xl font-bold text-white tracking-wide">Smart SPP</h2>
                             </div>
 
                             <motion.div variants={itemVariants} className="mb-8 text-center lg:text-left">
